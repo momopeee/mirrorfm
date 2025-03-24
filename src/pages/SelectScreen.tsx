@@ -20,7 +20,6 @@ const SelectScreen: React.FC = () => {
   const [showAssault, setShowAssault] = useState(false);
   const [assaultText, setAssaultText] = useState(false);
   const [assaultAlarm, setAssaultAlarm] = useState(false);
-  const [showBottomMenu, setShowBottomMenu] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [timeouts, setTimeouts] = useState<NodeJS.Timeout[]>([]);
   const [buttonSound, setButtonSound] = useState<string | null>(null);
@@ -88,35 +87,93 @@ const SelectScreen: React.FC = () => {
           autoPlay={true} 
           volume={0.7}
           id="select-alarm-sound"
-          key={`alarm-sound-${Date.now()}`} // Force remount
+          key={`alarm-sound-${Date.now()}`}
         />
       )}
       
-      {/* BGM for assault mode */}
+      {/* BGM for assault mode & スターウォーズ風コメントスクロール（EndingAScreen方式に統一） */}
       {assaultText && (
-        <AudioPlayer 
-          src={SELECT_ASSAULT_BGM} 
-          loop={true} 
-          autoPlay={true} 
-          volume={0.7}
-          id="select-assault-bgm"
-          key={`assault-bgm-${Date.now()}`} // Force remount
-        />
+        <>
+          <AudioPlayer 
+            src={SELECT_ASSAULT_BGM} 
+            loop={true} 
+            autoPlay={true} 
+            volume={0.7}
+            id="select-assault-bgm"
+            key={`assault-bgm-${Date.now()}`}
+          />
+          
+          {/* 背景画像 */}
+          <img 
+            src="/lovable-uploads/b8514c40-5c0b-49c1-895e-c1ca519e36cb.png"
+            alt="ゆうじ"
+            className="absolute inset-0 w-full h-full object-cover z-0"
+          />
+          
+          {/* EndingAScreen方式のスターウォーズ風コメントスクロール */}
+          <div className="relative flex-1 flex items-center justify-center w-full overflow-hidden perspective">
+            <div className="absolute w-full max-w-3xl text-center transform rotate3d">
+              <div 
+                className="star-wars-text-content text-white -webkit-text-stroke-[1px] sm:-webkit-text-stroke-[2px] leading-relaxed animate-text-scroll p-4 sm:p-6 rounded" 
+                style={{ 
+                  fontSize: isMobile ? 'calc(0.875rem + 2px)' : 'calc(1.125rem + 4px)',
+                  textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 5px #000000e6, 0 0 10px #0006'
+                }}
+              >
+                <p>うぇーい！みんな～</p>
+                <br />
+                <p>「ゆうじの陽気なおじさん」</p>
+                <br />
+                <p>でお馴染み、大久保です！！</p>
+                <br />
+                <br />
+                <p>って、おいおい！</p>
+                <br />
+                <p>それは俺のおじさんやないかい！！</p>
+                <br />
+                <br />
+                <p>陽気なおじさん＠ゆうじです！</p>
+                <br />
+                <br />
+                <p>今日はやってやりますよ</p>
+                <br />
+                <p>実は、フリーになって</p>
+                <br />
+                <p>やまにぃを超えちゃったかなって</p>
+                <br />
+                <p>思ってます</p>
+                <br />
+                <br />
+                <br />
+                <p>今日はやまにいに、</p>
+                <br />
+                <p>経営について指南しまくります</p>
+                <br />
+                <p>ちぇけら！</p>
+                <br />
+                <br />
+                <br />
+                <p>皆さん、</p>
+                <br />
+                <p>どうぞよろしくウェイで～す！！</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="absolute bottom-12 right-12 z-20">
+            <Button 
+              onClick={handleSkip}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg border-2 border-purple-400"
+            >
+              <SkipForward size={24} />
+              <span className="font-bold">スキップ</span>
+            </Button>
+          </div>
+        </>
       )}
       
-      {/* Button sound effect player */}
-      {buttonSound && (
-        <AudioPlayer 
-          src={buttonSound} 
-          loop={false} 
-          autoPlay={true} 
-          volume={0.7}
-          id="button-sound" 
-          key={`button-sound-${Date.now()}`} // Force remount
-        />
-      )}
-      
-      {!showAssault ? (
+      {/* 通常時の画面表示 */}
+      {!showAssault && (
         <div className="flex flex-col h-full bg-white">
           <div className="p-4 border-b flex items-center">
             <div className="mr-4">
@@ -238,108 +295,7 @@ const SelectScreen: React.FC = () => {
             {bgmEnabled ? <Volume2 size={24} color="black" /> : <VolumeX size={24} color="black" />}
           </button>
         </div>
-      ) : (
-        <div className="min-h-full bg-black relative overflow-hidden">
-          {assaultAlarm && (
-            <div className="absolute inset-0 z-10 animate-pulse">
-              <img 
-                src="/lovable-uploads/b8514c40-5c0b-49c1-895e-c1ca519e36cb.png"
-                alt="ゆうじ"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-          
-          {assaultText && (
-            <>
-              <img 
-                src="/lovable-uploads/b8514c40-5c0b-49c1-895e-c1ca519e36cb.png"
-                alt="ゆうじ"
-                className="absolute inset-0 w-full h-full object-cover z-0"
-              />
-              
-              <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden">
-                <div className="w-full text-center star-wars-crawl">
-                  <div className="text-red-500 font-bold text-xl text-center animate-star-wars" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
-                    <p>うぇーい！みんな～</p>
-                    <br />
-                    <p>「ゆうじの陽気なおじさん」</p>
-                    <br />
-                    <p>でお馴染み、大久保です！！</p>
-                    <br />
-                    <br />
-                    <p>って、おいおい！</p>
-                    <br />
-                    <p>それは俺のおじさんやないかい！！</p>
-                    <br />
-                    <br />
-                    <p>陽気なおじさん＠ゆうじです！</p>
-                    <br />
-                    <br />
-                    <p>今日はやってやりますよ</p>
-                    <br />
-                    <p>実は、フリーになって</p>
-                    <br />
-                    <p>やまにぃを超えちゃったかなって</p>
-                    <br />
-                    <p>思ってます</p>
-                    <br />
-                    <br />
-                    <br />
-                    <p>今日はやまにいに、</p>
-                    <br />
-                    <p>経営について指南しまくります</p>
-                    <br />
-                    <p>ちぇけら！</p>
-                    <br />
-                    <br />
-                    <br />
-                    <p>皆さん、</p>
-                    <br />
-                    <p>どうぞよろしくウェイで～す！！</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="absolute bottom-12 right-12 z-20">
-                <Button 
-                  onClick={handleSkip}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg border-2 border-purple-400"
-                >
-                  <SkipForward size={24} />
-                  <span className="font-bold">スキップ</span>
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
       )}
-      
-      <style>
-        {`
-        @keyframes star-wars {
-          0% {
-            transform: translateY(100vh) rotateX(25deg);
-          }
-          100% {
-            transform: translateY(-100vh) rotateX(25deg);
-          }
-        }
-        
-        .animate-star-wars {
-          animation: star-wars 12s linear;
-        }
-        
-        .star-wars-crawl {
-          perspective: 400px;
-          overflow: hidden;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        `}
-      </style>
     </MobileContainer>
   );
 };
