@@ -18,7 +18,6 @@ const APP_VERSION = "Ver.3.167.0";
 
 const Index = () => {
   const { bgmEnabled, toggleBgm } = useApp();
-  const [buttonSound, setButtonSound] = useState<string | null>(null);
   const [userInteracted, setUserInteracted] = useState(false);
   // ローディング状態の管理（初期状態：true）
   const [isLoading, setIsLoading] = useState(true);
@@ -75,9 +74,9 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
   
+  // handleStartClick 内の buttonSound 関連処理を削除
   const handleStartClick = useCallback(() => {
-    setButtonSound(BUTTON_SOUND);
-    setTimeout(() => setButtonSound(null), 300);
+    // BUTTON_SOUND を再生する処理は削除しました
   }, []);
   
   return (
@@ -101,17 +100,6 @@ const Index = () => {
         id="index-bgm"
       />
       
-      {buttonSound && (
-        <AudioPlayer 
-          src={buttonSound} 
-          loop={false} 
-          autoPlay={true} 
-          volume={0.7}
-          id="button-sound" 
-          key={`button-sound-${Date.now()}`}
-        />
-      )}
-
       <div className="flex flex-col items-center justify-between h-full px-4 py-8">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center flex flex-col items-center justify-center gap-6 sm:gap-10">
